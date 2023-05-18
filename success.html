@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link href="styles.css" rel="stylesheet" type="text/css" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto"
+      rel="stylesheet"
+    />
+    <title>Success page</title>
+  </head>
+  <body>
+    <h1>Hello <span id="recognizedName"></span> <span id="percentageMatch"> </span></h1>
+    <p>You will be redirected to the Absher homepage in a matter of moments.</p>
+    <div >
+      <img onclick="window.location.href='index.html'"
+       src="Assets/check.png" alt="Face" style="width: 300px; height: auto" />
+    </div>
+    <div class="step-indicator">
+      <span class="step"></span>
+      <span class="step"></span>
+      <span class="step active"></span>
+    </div>
+  </body>
+  <script>
+    // Retrieve the recognized name and percentage from the URL query parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const recognizedName = urlParams.get('name');
+    const percentageMatch = urlParams.get('percentage') +'%';
+
+    // Display the recognized name and percentage on the page
+    const recognizedNameElement = document.getElementById('recognizedName');
+    recognizedNameElement.innerText = recognizedName || "Unknown";
+
+    const percentageMatchElement = document.getElementById('percentageMatch');
+    percentageMatchElement.innerText = percentageMatch || "N/A";
+  </script>
+</html>

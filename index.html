@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="styles.css" rel="stylesheet" type="text/css" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto"
+      rel="stylesheet"
+    />
+    <script defer src="face-api.min.js"></script>
+    <script defer src="script.js"></script>    <title>Welcome</title>
+  </head>
+  <body>
+    <h1>Welcome User..</h1>
+    <p>Please look in the direction of the camera</p>
+    <div id="camera">
+      <div class="capture-section">
+        <video   width="500" height="240" id="videoElement" class="video-element"></video>
+      </div>
+      <canvas id="captureCanvas" style="display: none;"></canvas>
+  
+    </div>
+    <div class="step-indicator">
+      <span class="step active"></span>
+      <span class="step"></span>
+      <span class="step"></span>
+    </div>
+  </body>
+</html>

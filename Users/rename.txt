@@ -1,0 +1,11 @@
+@echo off
+setlocal enabledelayedexpansion
+
+set "folderPath= Put ur folder path here"
+set "fileExtension=.jpg"
+set counter=1
+
+for %%F in ("%folderPath%\*%fileExtension%") do (
+    ren "%%F" "!counter!%%~xF"
+    set /a counter+=1
+)
