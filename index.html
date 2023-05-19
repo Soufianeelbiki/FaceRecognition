@@ -9,8 +9,7 @@
       href="https://fonts.googleapis.com/css?family=Roboto"
       rel="stylesheet"
     />
-    <script defer src="face-api.min.js"></script>
-    <script defer src="script.js"></script>    <title>Welcome</title>
+      <title>Welcome</title>
   </head>
   <body>
     <h1>Welcome User..</h1>
@@ -22,10 +21,21 @@
       <canvas id="captureCanvas" style="display: none;"></canvas>
   
     </div>
+    <p>Or</p>
+    <button id="submitButton" onclick="window.location.href='addUser.html'">Add User</button>
     <div class="step-indicator">
       <span class="step active"></span>
       <span class="step"></span>
       <span class="step"></span>
     </div>
+  
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script defer src="face-api.min.js">
+    </script><script defer src="script.js"></script> 
   </body>
 </html>

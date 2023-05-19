@@ -1,4 +1,29 @@
+// Initialize Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyAGC5-72KGa-tvqA1UhHfDn9ScBE_rvKUo",
+  authDomain: "face-recognition-2e0de.firebaseapp.com",
+  projectId: "face-recognition-2e0de",
+  storageBucket: "face-recognition-2e0de.appspot.com",
+  messagingSenderId: "1093309181346",
+  appId: "1:1093309181346:web:1aa467e3e8fedffcded6fb",
+  measurementId: "G-BRMY92HSML"
+};
 
+// Initialize Firebase app
+firebase.initializeApp(firebaseConfig);
+var storage = firebase.storage();
+var storageRef = storage.ref();
+var userFolderRef = storageRef.child('User/');
+
+userFolderRef.listAll()
+  .then((res) => {
+    res.prefixes.forEach((folderRef) => {
+      console.log(folderRef.name); // Log the folder name
+    });
+  })
+  .catch((error) => {
+    console.log("Error retrieving folder names: ", error);
+  });
 Promise.all([
   faceapi.nets.ssdMobilenetv1.loadFromUri("/models"),
   faceapi.nets.faceRecognitionNet.loadFromUri("/models"),
@@ -13,22 +38,30 @@ function startDetection() {
     for (const label of labels) {
       const descriptions = [];
   
-      for (let i = 1; i <= 20; i++) {
-        const img = await faceapi.fetchImage(`./Users/${label}/${i}.jpg`);
-        const detections = await faceapi
-          .detectSingleFace(img)
-          .withFaceLandmarks()
-          .withFaceDescriptor();
+      for (let i = 1; i <= 10; i++) {
+        const imgRef = storageRef.child(`User/${label}/image${i}.png`);
+        
+        try {
+          const imgUrl = await imgRef.getDownloadURL();
+          const img = await faceapi.fetchImage(imgUrl);
+          const detections = await faceapi
+            .detectSingleFace(img)
+            .withFaceLandmarks()
+            .withFaceDescriptor();
       
-        // Skip images where no face is detected
-        if (!detections) {
-          console.log(`Skipping image: ./Users/${label}/${i}.jpg`);
-          continue;
+          // Skip images where no face is detected
+          if (!detections) {
+            console.log(`Skipping image: ${imgUrl}`);
+            continue;
+          }
+      
+          descriptions.push(detections.descriptor);
+        } catch (error) {
+          console.error(`Error retrieving image: ${imgRef.fullPath}`, error);
+          // Handle the error, such as logging or skipping the image
         }
-      
-        descriptions.push(detections.descriptor);
       }
-    
+      
   
       // Skip labels where no faces are detected in any image
       if (descriptions.length === 0) {
@@ -44,6 +77,23 @@ function startDetection() {
   
     return labeledFaceDescriptors;
   }
+  
+  async function retrieveFolderNames() {
+    var userFolderRef = storageRef.child('User/');
+  
+    try {
+      const res = await userFolderRef.listAll();
+      const folderNames = res.prefixes.map((prefixRef) => {
+        // Extract the folder name by removing the directory path
+        return prefixRef.name.replace(userFolderRef.name, '').replace('/', '');
+      });
+      return folderNames;
+    } catch (error) {
+      console.log("Error retrieving folder names: ", error);
+      return [];
+    }
+  }
+  
 
   
   let isFaceDetected = false; // Flag to track if a face is detected
@@ -64,11 +114,10 @@ function startDetection() {
   
     const img = document.createElement("img");
     img.onload = async function () {
-      const labeledFaceDescriptors = await getLabeledFaceDescriptions([
-        "pins_Adriana_Lima",
-        "pins_Alex_Lawther",
-        "pins_Alexandra_Daddario",
-      ]); //Modify these to add more photos
+      // Retrieve folder names dynamically from Firebase Storage
+      const folderNames = await retrieveFolderNames();
+    
+      const labeledFaceDescriptors = await getLabeledFaceDescriptions(folderNames);
       recognizeFaces(img, labeledFaceDescriptors);
     };
   
@@ -110,7 +159,7 @@ function startDetection() {
 
 function recognizeFaces(img, labeledFaceDescriptors) {
   const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors);
-  const threshold = 35;
+  const threshold = 40;
   faceapi
     .detectAllFaces(img)
     .withFaceLandmarks()
@@ -127,7 +176,7 @@ function recognizeFaces(img, labeledFaceDescriptors) {
         if (result.label === "unknown") {
           window.location.href = "failed.html";
         } else {
-          if (percentageMatch < 80) {
+          if (percentageMatch < 70) {
             window.location.href = "failed.html";
           } else {
             window.location.href = `success.html?name=${result.label}&percentage=${percentageMatch}`;
