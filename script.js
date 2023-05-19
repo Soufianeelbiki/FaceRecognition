@@ -39,12 +39,8 @@ function startDetection() {
       const descriptions = [];
   
       for (let i = 1; i <= 10; i++) {
-        if (i === 2) {
-          continue; // Skip iteration when i is 2
-        }
-      
         const imgRef = storageRef.child(`User/${label}/image${i}.png`);
-      
+
         try {
           const imgUrl = await imgRef.getDownloadURL();
           const img = await faceapi.fetchImage(imgUrl);
